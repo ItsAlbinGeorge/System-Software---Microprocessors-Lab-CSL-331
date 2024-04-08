@@ -1,0 +1,124 @@
+/*
+                                                                           Program.No:02
+                                                                       AVERAGE OF n NUMBERS
+                                                                       ====================
+*/
+.model small
+read macro num
+push ax
+push bx
+mov ah,01h
+int 21h
+sub al,30h
+mov bh,0ah
+mul bh
+mov num,al
+mov ah,01h
+int 21h
+sub al,30h
+add num,al
+pop bx
+pop ax
+endm
+
+disp macro msg
+push ax
+push dx
+mov ah,09h
+lea dx,msg
+int 21h
+pop dx
+pop ax
+endm
+
+.data
+msg0 db 10,13,'Enter the count:$'
+msg1 db 10,13,'Enter the numbers:$'
+msg2 db 10,13,'$'
+msg3 db 10,13,'The sum is $'
+msg4 db 10,13,'The average is $'
+res db 100 dup('$')
+n0 db ?
+n1 db ?
+n2 db ?
+n3 db ?
+res1 db 100 dup('$')
+
+.stack
+.code
+mov ax,@data
+mov ds,ax
+disp msg0
+read n0
+mov cl,n0
+mov ch,00h
+disp msg1
+mov ax,00h
+
+L1:
+disp msg2
+read n1
+mov bx,00h
+mov bl,n1
+add ax,bx
+mov n2,ah
+mov n3,al
+loop L1
+disp msg3
+lea si,res
+call hextoascii
+disp res
+mov ah,n2
+mov al,n3
+mov bl,n0
+mov bh,00h
+mov dx,00h
+div bx
+disp msg4
+lea si,res1
+call hextoascii
+disp res1
+mov al,00h
+mov ah,4ch
+int 21h
+
+hextoascii proc near
+push ax
+push bx
+push dx
+mov bx,0ah
+mov cx,00h
+
+L2:
+mov dx,00h
+div bx
+push dx
+inc cx
+cmp ax,0ah
+jge L2
+add al,30h
+mov [si],al
+
+L3:
+pop ax
+add al,30h
+inc si
+mov [si],al
+loop L3
+pop dx
+pop bx
+pop ax
+ret
+hextoascii endp
+end
+/*
+OUTPUT
+======
+Enter the count:03
+Enter the numbers:
+10
+20
+30
+The sum is 60
+The average is 20
+*/

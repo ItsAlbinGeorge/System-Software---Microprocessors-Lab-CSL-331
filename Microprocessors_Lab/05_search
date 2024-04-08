@@ -1,0 +1,108 @@
+/*
+
+                                                                           Program.No:05
+                                                                               SEARCH
+                                                                            ===========
+*/
+.model small
+read macro num
+push ax
+push bx
+mov ah,01h
+int 21h
+sub al,30h
+mov bl,0ah
+mul bl
+mov num,al
+mov ah,01h
+int 21h
+sub al,30h
+add num,al
+pop bx
+pop ax
+endm
+
+disp macro msg
+push ax
+push dx
+mov ah,09h
+lea dx, msg
+int 21h
+pop dx
+pop ax
+endm
+
+.data
+msg1 db 10,13,'Enter the count$'
+msg2 db 10,13,'Enter the Numbers$'
+msg3 db 10,13,' $'
+msg4 db 10,13,'Enter the Number to be searched$'
+msg5 db 10,13,'The Number not found$'
+msg6 db 10,13,'The Number found$'
+n0 db ?
+n1 db ?
+n2 db ?
+res db 100 dup('$')
+
+.stack
+.code
+mov ax,@data
+mov ds,ax
+disp msg1
+disp msg3
+read n0
+mov cx,00h
+mov cl,n0
+disp msg2
+disp msg3
+lea si,res
+
+L1:
+read n1
+mov al,n1
+mov [si],al
+inc si
+disp msg3
+Loop L1
+disp msg4
+disp msg3
+read n2
+mov cx,00h
+mov cl,n0
+lea si,res
+mov al,n2
+mov bh,00
+
+L2:
+inc bh
+mov bl,[si]
+cmp al,bl
+je L3
+inc si
+Loop L2
+disp msg5
+jmp L4
+
+L3:
+disp msg6
+
+L4:
+mov ah,4ch
+int 21h
+end
+/*
+OUTPUT
+======
+Enter the count
+05
+Enter the numbers
+56
+78
+34
+12
+40
+
+Enter the number to be searched
+34
+The Number found
+*/

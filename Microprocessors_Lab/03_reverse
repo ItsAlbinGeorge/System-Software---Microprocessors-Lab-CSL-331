@@ -1,0 +1,86 @@
+/*
+                                                                           Program.No:03
+                                                                         REVERSE OF STRING
+                                                                         =================
+*/
+.model small
+disp macro msg
+push ax
+push dx
+mov ah,09h
+lea dx,msg
+int 21h
+pop dx
+pop ax
+endm
+
+.data
+msg1 db 10,13,'Enter the String:$'
+msg2 db 10,13,'Press enter key to complete string entry$'
+msg3 db 10,13,'$'
+msg4 db 10,13,'The entered string is:$'
+msg5 db 10,13,'The reversed string is:$'
+n0 db ?
+n1 db ?
+n2 db ?
+res db 100 dup('$')
+res1 db 100 dup('$')
+
+.stack
+.code
+mov ax,@data
+mov ds,ax
+disp msg1
+disp msg2
+disp msg3
+mov cx,00h
+lea si,res
+
+l1:
+mov ah,01h
+int 21h
+cmp al,0dh
+je l2
+mov [si],al
+inc cx
+inc si
+jmp l1
+
+l2:
+mov n0,cl
+mov n1,ch
+lea si,res
+lea di,res1
+dec cx
+add di,cx
+inc cx
+ 
+aa:
+mov al,[si]
+mov [di],al
+inc si
+dec di
+loop aa
+
+disp msg4
+disp msg3
+disp res
+disp msg5
+disp msg3
+disp res1
+mov al,00h
+mov ah,4ch
+int 21h
+end
+/*
+OUTPUT
+======
+Enter the string:
+Prese enter key to complete string entry
+albin
+
+The enterd string is:
+albin
+The reversed string is:
+nibla
+*/

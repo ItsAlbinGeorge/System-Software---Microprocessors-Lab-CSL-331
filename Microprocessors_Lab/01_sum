@@ -1,0 +1,100 @@
+/*
+                                                                           Program.No:01
+                                                                   ADDITION OF TWO 8-BIT NUMBERS
+                                                                   =============================
+*/
+.model small
+read macro num
+mov ah,01h
+int 21h
+sub al,'0'
+mov bh,0ah
+mul bh
+mov num,al
+mov ah,01h
+int 21h
+sub al,'0'
+add num,al
+endm
+
+print macro msg
+lea dx,msg
+mov ah,09h
+int 21h
+endm
+
+.data
+msg0 db 'PROGRAM FOR ADDITION$'
+msg2 db 10,13,'Enter first number;$'
+msg3 db 10,13,'Enter second number:$'
+msg4 db 10,13,'Sum is $'
+result db 100 dup(0)
+num db 0
+num1 db 0
+num2 db 0
+
+.code
+mov ax,@data
+mov ds,ax
+print msg0
+print msg2
+read num
+mov al,num
+print msg3
+read num1
+mov bl,num1
+mov al,num
+add al,bl
+print msg4
+mov ah,00h
+call hextoascii
+mov ah,4ch
+mov al,00h
+int 21h
+
+hextoascii proc near
+push ax
+push bx
+push cx
+push dx
+push si
+mov cx,00h
+lea si,result
+mov bx,0ah
+
+L4:
+mov dx,00h
+div bx
+add dl,'0'
+push dx
+inc cx
+cmp ax,0ah
+jge L4
+add al,'0'
+mov [si],al
+
+L5:
+pop ax
+inc si
+mov [si],al
+loop L5
+mov al,'$'
+inc si
+mov [si],al
+print result
+pop si
+pop dx
+pop cx
+pop bx
+pop ax
+ret
+hextoascii endp
+end 
+/*
+OUTPUT
+======
+PROGRAM FOR ADDITION
+Enter first number:20
+Enter second number:30
+Sum is 50
+*/
